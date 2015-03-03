@@ -17,15 +17,14 @@ imshow(img);title('one');
 cform = makecform('srgb2lab');
 img2 = applycform(img,cform);
 
-imshow(img2);title('two');
-figure;
+%imshow(img2);title('two');figure;
 
 % extract gray channel twice
 img_gray1 = img2(:,:,1);
 img_gray2 = img2(:,:,2);
 
-imshow(img_gray1);title('three'); figure;
-imshow(img_gray2);title('four'); figure;
+%imshow(img_gray1);title('three'); figure;
+%imshow(img_gray2);title('four'); figure;
 
 %make threshhold gray
 g_TS1 = graythresh(img_gray1);
@@ -39,19 +38,21 @@ imgBW2 = im2bw(img_gray2,g_TS2);
 
 O = imgBW1.*imgBW2;
 
-imshow(O);title('seven'); figure; 
+%imshow(O);title('seven'); figure; 
 
 %remove small stuff less than 4000px
 %this is maybe not so clever...
 O = bwareaopen(O,4000);
 
 %filling and closing
-se = strel('disk',8);
-O = imclose(O,se);
+se = strel('disk',5);
+se2 = strel('disk',3);
+er = imerode(O,se2);
+O = imclose(er,se);
 O = imfill(O,'holes');
 imshow(O); title('eight'); figure;
 
-[B,L] = bwboundaries(O,'noholes');
+[B,L] = bwboundaries(O,'holes');
 imshow(label2rgb(L, @jet, [.5 .5 .5]))
 hold on
 for i = 1: length(B)
