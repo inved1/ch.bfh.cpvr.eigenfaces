@@ -119,9 +119,9 @@ facesDB2 = eigvec' * facesDB;
 
 
 %% Load Image with faces to search
-scaleFactor = 1.3;
+scaleFactor = 2;
 
-img = imread('Images/cpvr_classes/2014HS/02.JPG');
+img = imread('Images/cpvr_classes/2014HS/14.JPG');
 %imshow(img); figure;
 
 faceDetector = vision.CascadeObjectDetector('ClassificationModel', 'FrontalFaceCART');
@@ -131,20 +131,51 @@ bbox = step(faceDetector, img);
 %imgBB = insertObjectAnnotation(img,'rectangle',bbox,'Face');
 %imshow(imgBB); figure;
 
+disp(length(bbox));
+
+
+%imgBB = insertObjectAnnotation(img,'rectangle',bbox,'Face');
+%imshow(imgBB);
+
 k = 0;
 for i = 1:length(bbox)
     
     row = bbox(i,:);
     
-    oriValue = row(3);
-    resizeValue = row(3) * scaleFactor;
+    % Take bigger area around face
+%     oriValue = row(3)
+%     resizeValue = row(3) * scaleFactor
+%     
+%     row(1) = row(1) - (resizeValue - oriValue) / 2;
+%     row(2) = row(2) - (resizeValue - oriValue) / 2;
+%     row(3) = row(3) * scaleFactor;
+%     row(4) = row(4) * scaleFactor;
     
-    row(1) = row(1) - (resizeValue - oriValue) / 2;
-    row(2) = row(2) - (resizeValue - oriValue) / 2;
-    row(3) = row(3) * scaleFactor;
-    row(4) = row(4) * scaleFactor;
+    %% set b
+    
+    % set bounding box to 120 x 160 pixel
+    deltaY = round(160 - row(3));
+    deltaX = round(120 - row(4));
+    
+    newX =      max(round(round(row(1)) - deltaX / 2), 0)
+    newY =      max(round(round(row(2)) - deltaY / 2), 0)
+    newWidth =  max(round(round(row(3)) + deltaX), 0)
+    newHeight = max(round(round(row(4)) + deltaY), 0)
+    
+    row(1) = newX;
+    row(2) = newY;
+    row(3) = newWidth;
+    row(4) = newHeight;
+    
+    %disp(row)
     
     bbox(i,:) = row;
+    
+    
+    
+    disp(bbox);
+    
+    
     
     % Crop Face
     croppedImg = imcrop(img,row);
@@ -182,20 +213,23 @@ for i = 1:length(bbox)
 
     % Sort the distances and show the nearest 14 faces
     [sortedDistPC, sortIndex] = sort(distPC); % sort distances
-    figure('Color',[1 1 1]);
+    figure('Position',[100 500 1000 600]);
+    
     for i=1:14
-        subplot(2,7,i); 
-        imshow((reshape(mn+facesDB(:,sortIndex(i)), imsize)));
-        subplot(3,7,1); 
+        subplot(3, 7, 4);
         imshow(croppedImg);
+        
+        subplot(3,7,i+7); 
+        imshow((reshape(mn+facesDB(:,sortIndex(i)), imsize)));
+        
         title(sprintf('Dist=%2.2f',sortedDistPC(i)));
     end;
+    
+    pause;
 end
 
 
 
-%imgBB = insertObjectAnnotation(img,'rectangle',bbox,'Face');
-%imshow(imgBB);
 
 
 
