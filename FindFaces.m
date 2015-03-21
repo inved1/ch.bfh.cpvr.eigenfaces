@@ -4,7 +4,7 @@ clc;
 
 % first get Image
 
-img = imread('Images/cpvr_classes/2014HS/02.JPG');
+img = imread('Images/cpvr_classes/2014HS/11.JPG');
 imshow(img);title('one'); figure;
 
 % make a color transformation from RGB to CIELAB color space
@@ -102,9 +102,9 @@ for i=1:length(imgstats)
 
     %get hair
     %bboxArea(1) = bboxArea(1) -100;
-   % bboxArea(2) = bboxArea(2) -10;
+    bboxArea(2) = bboxArea(2) -10;
     %bboxArea(3) = bboxArea(3) +200;
-   % bboxArea(4) = bboxArea(4) +20;
+    bboxArea(4) = bboxArea(4) +20;
     
     if((bboxArea(3) < 120) || (bboxArea(4) < 160))
         
@@ -114,7 +114,8 @@ for i=1:length(imgstats)
         h = s(1);
         w = s(2);
         c = [h/2 w/2];
-        hautfarbe = impixel(crop,c(1),c(2));
+        hautfarbe = mean(reshape(crop,[],3),1);
+        %hautfarbe = mean(impixel(crop,c(1)-5:c(1)+5,c(2)-5:c(2)+5));
         crop = addborder(crop, 50, hautfarbe, 'outer');
         %get center
         s = size(crop);
@@ -144,7 +145,8 @@ for i=1:length(imgstats)
         h = s(1);
         w = s(2);
         c = [h/2 w/2];
-        hautfarbe = impixel(crop,c(1),c(2));
+        
+        hautfarbe =mean(reshape(crop,[],3),1);
         crop = addborder(crop, 50, hautfarbe, 'outer');
         %get center
         s = size(crop);
@@ -166,6 +168,8 @@ for i=1:length(imgstats)
     imshow(crop); 
     
     foundFaces{i} = crop;
+    
+    %pause;
         
 end
 figure;
@@ -236,7 +240,6 @@ for i = 1:length(foundFaces)
     %imshow(croppedImg); figure;
     %searchFace = reshape(mn+facesDB(:,i), imsize);
     
-    faceImgToSearchHudritsch = facesDB(:,i);
     faceImgToSearch = croppedImg(:);
     faceImgToSearch = double(faceImgToSearch)/255;
     
@@ -272,155 +275,5 @@ for i = 1:length(foundFaces)
     pause;
 end
 
-
-
-
-% old code
-% 
-% 
-% for i=1:length(foundFaces)
-%     foundFace = foundFaces{i}(:);
-%     foundFace = double(foundFace) /255;
-%     mean_foundFace = mean(foundFace,2);
-%     
-%     % only one face - i dont need to shift?!
-%     shifted_foundFace = foundFace;% - repmat(mean_foundFace,1,1);
-%     
-%     
-%     [U,E,V] = svd(shifted_foundFace,0);
-%     
-%     P = U(:,1:1);
-%     
-%     found_weight(:,i) =  P' * shifted_foundFace;
-%     
-%     
-% end
-% 
-% 
-% 
-% %now :
-% % 1. loop trough each folder and make eigenface
-% % 2. check eigenface with cropped image
-% % 3. mark them
-% for i=0:1:2 % 2 instead of 11
-%     k=0;
-%     w = 120;
-%     h = 160;
-%     
-%     for j=1:1:10 % 10 images per person
-%        filename  = sprintf('images/cpvr_faces_160/%04d/%02d.JPG',i,j);
-%        %disp(filename)
-%        image_data = double(imread(filename));
-%        k = k + 1;
-%        faces(:,k) = image_data(:);
-%     end;
-%     
-%     % mean face of faces
-%     %eigenface 
-%   
-%   
-%     
-%     clear faces;
-%     
-%     
-%     
-% end;
-
-
-    %convert and normalize 
-%     faces = double(faces) / 255;
-%     mean_face = mean(faces,2);
-%     
-%     shifted_images = faces - repmat(mean_face,1,k);
-%     [U,E,V] = svd(shifted_images,0);
-%     
-%     eigenVals = diag(E);
-%     lmda = eigenVals(1:iPCA); % only 2 principal components
-%     
-%     %space face - face space, funny
-%     P = U(:,1:iPCA);
-%     
-%     %weight
-%     weight = P' * shifted_images;
-% 
-%     x = mean(weight);
-%     disp(x);
-%     
-%     clear P;
-%     clear weight;
-%     clear faces;
-%     clear mean_face;
-%     clear shifted_images;
-
-
-
-
-
-
-
-%shall I now get the round stuff or not ? (face is mostly round)
-%or on the same height? (since we are all "tall"?)
-
-%following code is to check if it's round.
-% and then cut the 11 'roundest' stuff and work with this
-% but since my skin-color is sometimes hidden by hair, this doesnt work
-% now I think i just loop over the other skin parts as well
-
-
-
-%imgstats = regionprops(O);
-% 
-% for i=1:length(imgstats)
-%     
-%     boundary = B{i};
-%     
-%     delta_sq = diff(boundary).^2;
-%     perimeter = sum(sqrt(sum(delta_sq,2)));
-%     
-%     area = imgstats(i).Area;
-%     
-%     metric = 4*pi*area/perimeter^2;
-%     disp(metric);
-%     allmetrics(i) = metric;
-%    
-%         
-% end
-% 
-% allmetrics = sort(allmetrics);
-% allmetrics2 = allmetrics(length(allmetrics)-10:end); % 10: because of 11 stutends
-% 
-% for i=1:length(imgstats)
-%     boundary = B{i};
-%     
-%     delta_sq = diff(boundary).^2;
-%     perimeter = sum(sqrt(sum(delta_sq,2)));
-%     
-%     area = imgstats(i).Area;
-%     
-%     metric = 4*pi*area/perimeter^2;
-%     
-%     if any(metric==allmetrics2)== 1
-%         bboxArea = imgstats(i).BoundingBox;  
-%         bboxArea(1) = bboxArea(1) - 50;
-%         bboxArea(2) = bboxArea(2) - 50;
-%         bboxArea(3) = bboxArea(3) + 100;
-%         bboxArea(4) = bboxArea(4) + 100;
-%         crop = imcrop(img,bboxArea);
-%         subplot(2,11,i);
-%         imshow(crop);
-%         
-%     end
-%     
-%     
-% end
-
-
-%  if metric > threshhold
-%         
-%         %expand bounding box a littlebit
-
-%         
-%     end
-%     
 
 
