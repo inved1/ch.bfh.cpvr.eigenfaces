@@ -144,17 +144,11 @@ for i=1:length(imgstats)
         %here image is bigger
         crop = imcrop(img,bboxArea);
         s = size(crop);
-        h = s(1);
-        w = s(2);
-        if(160/h > 120/w)
-            crop = imresize(crop, [(160/h)*160 NaN]);    
-        else
-            crop = imresize(crop, [NaN (120/w)*120]);
-        end
         
+        crop = imresize(crop, [160 120]);
      
     end
-    crop = imcrop(crop, [0, 0, 120, 160]);
+    
        
     subplot(2,11,i);
     imshow(crop);
