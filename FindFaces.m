@@ -4,7 +4,7 @@ clc;
 
 % first get Image
 
-img = imread('Images/cpvr_classes/2014HS/11.JPG');
+img = imread('Images/cpvr_classes/2014HS/02.JPG');
 imshow(img);title('one'); figure;
 
 % make a color transformation from RGB to CIELAB color space
@@ -57,14 +57,22 @@ O = imgBW1.*imgBW2;
 %this is maybe not so clever...
 O = bwareaopen(O,4000);
 
+%O = edge(O,'canny');
+
 %filling and closing
 %se = strel('disk',2);
-se = strel('disk',10);
-O = imclose(O, se);
+se = strel('disk',2);
+O = imcomplement(imdilate(imcomplement(O), se));
+
 O = imfill(O,'holes');
+
+O = bwareaopen(O,4000);
+
+
+
 imshow(O); title('eight'); figure;
 
-[B,L] = bwboundaries(O,'holes');
+[B,L] = bwboundaries(O,'noholes');
 imshow(label2rgb(L, @jet, [.2 .2 .2]))
 hold on
 for i = 1: length(B)
@@ -89,7 +97,7 @@ imgstats = regionprops(O,'all');
 for i=1:length(imgstats)
     
     boundary = B{i};
-    
+  
     %some tries to check if anything is round (face) or not (arm)
     delta_sq = diff(boundary).^2;
     perimeter = sum(sqrt(sum(delta_sq,2)));
