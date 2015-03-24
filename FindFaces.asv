@@ -175,17 +175,16 @@ for i=1:length(imgstats)
      
     end
     %round
-
+    crop = imcrop(crop, [0, 0, 120, 160]);
+    axis on   
+    subplot(2,11,i);
+    imshow(crop); 
     
     
     disp(imgstats(i).MajorAxisLength);
     disp(imgstats(i).MinorAxisLength);
     disp(imgstats(i).MajorAxisLength / imgstats(i).MinorAxisLength);
-    if ((imgstats(i).MajorAxisLength / imgstats(i).MinorAxisLength) < 2.8)
-        crop = imcrop(crop, [0, 0, 120, 160]);
-        axis on   
-        subplot(2,11,i);
-        imshow(crop); 
+    if ((imgstats(i).MajorAxisLength / imgstats(i).MinorAxisLength) < 2.5)
         foundFaces{i} = crop; 
     end
    
@@ -195,7 +194,7 @@ for i=1:length(imgstats)
 end
 figure;
 
-foundFaces = foundFaces(~cellfun('isempty',foundFaces));
+foundFaces = c(~cellfun('isempty',c))
 % PCA
 
 % Do the PCA
