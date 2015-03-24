@@ -187,6 +187,8 @@ figure;
 %% Step 1: Load face images & convert each image into a vector of a matrix
 k = 0;
 for i=0:1:11
+    if (i ~= 10)
+        
     for j=1:1:10
         filename  = sprintf('images/cpvr_faces_160/%04d/%02d.JPG',i,j);
         %disp(filename)
@@ -194,6 +196,7 @@ for i=0:1:11
         k = k + 1;
         facesDB(:,k) = image_data(:);
      end;
+    end
 end;
 nImages = k;                     %total number of images
 imsize = size(image_data);       %size of image (they all should have the same size) 
