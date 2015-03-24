@@ -56,7 +56,7 @@ facesDB2 = eigvec' * facesDB;
 
 %% Load Image with faces to search
 
-img = imread('Images/cpvr_classes/2014HS/11.JPG');
+img = imread('Images/cpvr_classes/2014HS/05.JPG');
 %imshow(img); figure;
 
 faceDetector = vision.CascadeObjectDetector('ClassificationModel', 'FrontalFaceCART');
@@ -81,12 +81,12 @@ for i = 1:length(bbox)
     row = bbox(i,:);
     
     % Take bigger area around face
-    oriValue = row(3)
+    oriValue = row(3);
     resizeValueWidth = row(3) * scaleFactor;
-    resizeValueHeight = row(4) * scaleFactor * 160 / 120;
+    resizeValueHeight = row(4) * scaleFactor * 160 / 120; % *1.3333: to get correct proportions
     
     row(1) = row(1) - (resizeValueWidth - oriValue) / 2;
-    row(2) = row(2) - (resizeValueHeight - oriValue) / 2;
+    row(2) = row(2) - (resizeValueHeight - oriValue) / 2 - (row(4) * 0.1); %- (row(4) * 0.1): move 10% of height up to get better face-center
     row(3) = row(3) * scaleFactor;
     row(4) = row(4) * scaleFactor * 160 / 120;
     
