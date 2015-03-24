@@ -55,9 +55,8 @@ facesDB2 = eigvec' * facesDB;
  
 
 %% Load Image with faces to search
-scaleFactor = 2;
 
-img = imread('Images/cpvr_classes/2014HS/07.JPG');
+img = imread('Images/cpvr_classes/2014HS/11.JPG');
 %imshow(img); figure;
 
 faceDetector = vision.CascadeObjectDetector('ClassificationModel', 'FrontalFaceCART');
@@ -69,8 +68,12 @@ bbox = step(faceDetector, img);
 
 disp(length(bbox));
 
-%imgBB = insertObjectAnnotation(img,'rectangle',bbox,'Face');
-%imshow(imgBB);
+imgBB = insertObjectAnnotation(img,'rectangle',bbox,'Face');
+imshow(imgBB);
+
+%pause;
+
+scaleFactor = 1.2;
 
 k = 0;
 for i = 1:length(bbox)
@@ -78,41 +81,39 @@ for i = 1:length(bbox)
     row = bbox(i,:);
     
     % Take bigger area around face
-%     oriValue = row(3)
-%     resizeValue = row(3) * scaleFactor
-%     
-%     row(1) = row(1) - (resizeValue - oriValue) / 2;
-%     row(2) = row(2) - (resizeValue - oriValue) / 2;
-%     row(3) = row(3) * scaleFactor;
-%     row(4) = row(4) * scaleFactor;
+    oriValue = row(3)
+    resizeValueWidth = row(3) * scaleFactor;
+    resizeValueHeight = row(4) * scaleFactor * 160 / 120;
     
-    %% set b
+    row(1) = row(1) - (resizeValueWidth - oriValue) / 2;
+    row(2) = row(2) - (resizeValueHeight - oriValue) / 2;
+    row(3) = row(3) * scaleFactor;
+    row(4) = row(4) * scaleFactor * 160 / 120;
+    
+    
     
     % set bounding box to 120 x 160 pixel
-    deltaY = round(160 * 1.2 - row(3));
-    deltaX = round(120 * 1.2 - row(4));
+%     deltaY = round(160 * 1.2 - row(3));
+%     deltaX = round(120 * 1.2 - row(4));
+%     
+%     row(2) = row(2) - 10;
+%     
+%     newX =      max(round(round(row(1)) - deltaX / 2), 0)
+%     newY =      max(round(round(row(2)) - deltaY / 2), 0)
+%     newWidth =  max(round(round(row(3)) + deltaX), 0)
+%     newHeight = max(round(round(row(4)) + deltaY), 0)
+%     
+%     row(1) = newX;
+%     row(2) = newY;
+%     row(3) = newWidth;
+%     row(4) = newHeight;
+
+
     
-    row(2) = row(2) - 10;
-    
-    newX =      max(round(round(row(1)) - deltaX / 2), 0)
-    newY =      max(round(round(row(2)) - deltaY / 2), 0)
-    newWidth =  max(round(round(row(3)) + deltaX), 0)
-    newHeight = max(round(round(row(4)) + deltaY), 0)
-    
-    row(1) = newX;
-    row(2) = newY;
-    row(3) = newWidth;
-    row(4) = newHeight;
-    
-    %disp(row)
     
     bbox(i,:) = row;
     
-    
-    
-    disp(bbox);
-    
-    
+    %disp(bbox);
     
     % Crop Face
     croppedImg = imcrop(img,row);
