@@ -6,7 +6,7 @@ clear all;
 %% Step 1: Load face images & convert each image into a vector of a matrix
 k = 0;
 for i=0:1:11
-    if (i ~= 10)
+    if (i ~= 10 && i ~= 3)
         for j=1:1:10
             filename  = sprintf('images/cpvr_faces_160/%04d/%02d.JPG',i,j);
             %disp(filename)
@@ -56,7 +56,8 @@ facesDB2 = eigvec' * facesDB;
 
 %% Load Image with faces to search
 
-img = imread('Images/cpvr_classes/2014HS/05.JPG');
+%img = imread('Images/cpvr_classes/2014HS/11.JPG');
+img = imread('Images/cpvr_classes/2015FS/15.JPG');
 %imshow(img); figure;
 
 faceDetector = vision.CascadeObjectDetector('ClassificationModel', 'FrontalFaceCART');
