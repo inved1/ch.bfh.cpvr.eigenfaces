@@ -4,7 +4,8 @@ clc;
 
 % first get Image
 
-img = imread('Images/cpvr_classes/2014HS/11.JPG');
+img = imread('Images/cpvr_classes/2014HS/18.JPG');
+%img = imresize(img,1.3);
 imshow(img);title('one'); figure;
 
 % make a color transformation from RGB to CIELAB color space
@@ -43,8 +44,8 @@ g_TS3 = graythresh(img_gray3);
 
 
 %now make BW image with this threshhold
-imgBW1 = im2bw(img_gray1,g_TS1);
-imgBW2 = im2bw(img_gray2,g_TS2);
+imgBW1 = im2bw(img_gray3,g_TS3);
+imgBW2 = im2bw(img_gray1,g_TS1);
 
 imgBW1 = medfilt2(imgBW1, [5 5]);
 %imgBW2 = medfilt2(imgBW2, [8 8]);
@@ -116,7 +117,7 @@ for i=1:length(imgstats)
     %get hair
     bboxArea(1) = bboxArea(1) -10;
     bboxArea(2) = bboxArea(2) -30;
-    bboxArea(3) = bboxArea(3) +30;
+    bboxArea(3) = bboxArea(3) +20;
     bboxArea(4) = bboxArea(4) +30;
     
     if((bboxArea(3) < 120) || (bboxArea(4) < 160))
@@ -127,7 +128,7 @@ for i=1:length(imgstats)
         h = s(1);
         w = s(2);
         c = [h/2 w/2];
-        hautfarbe = mean(reshape(crop,[],3),1);
+        hautfarbe = mean(reshape(imcrop(crop, [c(1) c(2) 5 5] ),[],3),1);
         %hautfarbe = mean(impixel(crop,c(1)-5:c(1)+5,c(2)-5:c(2)+5));
         crop = addborder(crop, 50, hautfarbe, 'outer');
         %get center
@@ -159,7 +160,7 @@ for i=1:length(imgstats)
         w = s(2);
         c = [h/2 w/2];
         
-        hautfarbe =mean(reshape(crop,[],3),1);
+        hautfarbe =mean(reshape(imcrop(crop, [c(1) c(2) 5 5] ),[],3),1);
         crop = addborder(crop, 50, hautfarbe, 'outer');
         %get center
         s = size(crop);
@@ -202,7 +203,7 @@ foundFaces = foundFaces(~cellfun('isempty',foundFaces));
 %% Step 1: Load face images & convert each image into a vector of a matrix
 k = 0;
 for i=0:1:11
-    if (i ~= 10)
+    if (i ~= 10 && i~= 3)
         
     for j=1:1:10
         filename  = sprintf('images/cpvr_faces_160/%04d/%02d.JPG',i,j);
