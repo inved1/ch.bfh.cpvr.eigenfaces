@@ -4,7 +4,7 @@ clc;
 
 % first get Image
 
-img = imread('Images/cpvr_classes/2014HS/18.JPG');
+img = imread('Images/cpvr_classes/2014HS/02.JPG');
 %img = imresize(img,1.3);
 imshow(img);title('one'); figure;
 
@@ -44,8 +44,8 @@ g_TS3 = graythresh(img_gray3);
 
 
 %now make BW image with this threshhold
-imgBW1 = im2bw(img_gray3,g_TS3);
-imgBW2 = im2bw(img_gray1,g_TS1);
+imgBW1 = im2bw(img_gray1,g_TS1);
+imgBW2 = im2bw(img_gray2,g_TS2);
 
 imgBW1 = medfilt2(imgBW1, [5 5]);
 %imgBW2 = medfilt2(imgBW2, [8 8]);
